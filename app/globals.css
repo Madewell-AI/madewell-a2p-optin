@@ -878,8 +878,8 @@ p {
   margin-bottom: 24px;
 }
 .gen-form {
-  position: sticky;
-  top: 20px;
+  max-width: 640px;
+  margin: 0 auto;
 }
 .gen-h2 {
   font-size: 20px;
@@ -994,7 +994,8 @@ p {
   scroll-margin-top: 20px;
   border-top: 1px solid var(--border);
   padding-top: 36px;
-  margin-top: 36px;
+  margin: 36px auto 0;
+  max-width: 820px;
 }
 .gen-step > h2 {
   font-size: 24px;
