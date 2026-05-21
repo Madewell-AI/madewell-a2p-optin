@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# A2P Opt-In Kit
 
-## Getting Started
+The fastest way to get a business **approved for A2P 10DLC SMS registration**
+on Telnyx or Twilio — without the endless rejections.
 
-First, run the development server:
+Carriers require a real public website with a compliant opt-in form, privacy
+policy, and terms before they'll let you text from a 10-digit number. Those
+pages get rejected constantly for subtle reasons (a missing or mandatory
+consent checkbox, a privacy policy that doesn't mention SMS, an unclear opt-in
+flow). This kit handles all of it.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How it works
+
+This repo is the **marketing / generator site**. A business:
+
+1. Enters their details (business name, support email, etc.).
+2. Gets a **live preview** of their contact site, plus a **copy/paste prompt**
+   to hand to their coding agent (Claude Code, Cursor, …) that deploys the site
+   for them.
+3. Gets **every Telnyx / Twilio campaign field pre-written** — description,
+   message flow, sample messages, keywords, auto-responses, and attribute
+   settings — to copy and paste during registration.
+
+The site their agent deploys lives in [`template/`](./template) — a standalone
+contact / opt-in site that looks like a normal business page (not a compliance
+form) and ships everything carriers check, with the opt-in checkbox done
+correctly to avoid the most common rejection.
+
+```
+madewell-a2p-optin/      ← this repo → deploy to Vercel (the generator site)
+  app/                   homepage, generator, live preview, registration wizard
+  lib/                   marketing config + field/prompt generators
+  template/              ← the open-source contact/opt-in site people deploy
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Run locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open <http://localhost:3000>.
 
-## Learn More
+To work on the deployable template instead:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd template && npm install && npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Configure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Set the published repo URL in **`lib/marketing.ts`** (`OSS_REPO_URL` /
+`OSS_REPO_SLUG`) so the generated agent prompt and links point to the right
+place. Field wording lives in `lib/campaign-content.ts`; the agent prompt in
+`lib/agent-prompt.ts`.
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Standard Next.js app — deploy the repo root to Vercel:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx vercel        # preview
+npx vercel --prod # production
+```
+
+## About error 803
+
+`803 — Call to Action forces an Opt-In consent because it is missing the "Check
+Box".` The most common A2P opt-in rejection: the form gives people no genuine
+way to decline SMS while still submitting. The template's checkbox is a
+**separate field, unchecked by default, and not required to submit** — so
+consent is never forced. Keep it that way and 803 goes away.
+
+> This kit helps you present an accurate, compliant opt-in flow. You're still
+> responsible for only texting people who genuinely consented and for following
+> the TCPA, CTIA guidelines, and your carrier's rules.
+
+## Tech
+
+Next.js (App Router) + React, plain CSS. MIT licensed.
